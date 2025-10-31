@@ -4,6 +4,8 @@ import { createUser } from "../controllers/user.controller.js";
 
 const authRouter = Router();
 
-authRouter.post("/auth/login", loginUser);
-authRouter.post("/auth/register", createUser);
+// ✅ Correct paths
+authRouter.post("/login", loginUser);
+authRouter.post("/register", createUser);
+
 export default authRouter;
