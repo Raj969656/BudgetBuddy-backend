@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -12,53 +11,51 @@ import { authMiddleware } from "./middlewares/auth.middleware.js";
 import { notFount, errorHandler } from "./errors/error.js";
 import connectDb from "./config/db.js";
 
+// Load environment variables
 dotenv.config();
 
-// connect database
+// Connect to database
 connectDb();
 
 const app = express();
+
+// ✅ FIXED CORS CONFIG
 app.use(
   cors({
     origin: [
-      "https://6904fd0507e92031e5c49d7d--sweet-duckanoo-b3b3dc.netlify.app",
-      "https://sweet-duckanoo-b3b3dc.netlify.app", // Netlify's production URL (auto-redirect fix)
+      "https://sweet-duckanoo-b3b3dc.netlify.app",
+      "https://6905094c0ef96a618725ca1e--sweet-duckanoo-b3b3dc.netlify.app", // Netlify preview link
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
-
-
 );
 
+// Middleware
 app.use(express.json());
 
-// Routes
-app.use("/api", authRouter);
+// ✅ Routes
+app.use("/api/auth", authRouter);
+app.use("/api/ai", aiRouter);
 
-
-// AI routes
-
-app.use("/api/ai", aiRouter); 
-// Auth middleware
+// Protected routes (after auth)
 app.use(authMiddleware);
-
-// App routes
-app.use("/api", expenseRouter);
-app.use("/api", userRouter);
-
+app.use("/api/expenses", expenseRouter);
+app.use("/api/users", userRouter);
 
 // Error handlers
 app.use(notFount);
 app.use(errorHandler);
 
-// Root test
-app.get("/", (req, resp) => {
-  resp.json({ message: "Welcome to expense backend." });
+// Root test route
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to expense backend." });
 });
 
+// ✅ Dynamic port for Render
 const PORT = process.env.PORT || 8081;
-app.listen(PORT, () => {
-  console.log(`✅ Server started on port ${PORT}`);
-});
 
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
