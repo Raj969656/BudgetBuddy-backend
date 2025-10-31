@@ -31,13 +31,14 @@ app.use(
 app.use(express.json());
 
 // ✅ Auth routes (unprotected)
+// ✅ Auth routes (unprotected)
 app.use("/api/auth", authRouter);
 app.use("/api/ai", aiRouter);
 
-// ✅ Protected routes (after middleware)
-app.use(authMiddleware);
-app.use("/api/expenses", expenseRouter);
-app.use("/api/users", userRouter);
+// ✅ Protected routes (only for these)
+app.use("/api/expenses", authMiddleware, expenseRouter);
+app.use("/api/users", authMiddleware, userRouter);
+
 
 // ✅ Error handlers
 app.use(notFount);
