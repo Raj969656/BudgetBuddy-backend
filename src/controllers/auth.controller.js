@@ -1,42 +1,47 @@
 import User from "../models/users.js";
 import bcrypt from "bcrypt";
-import { createToken } from "../utils/jwtUtil.js";
-export const loginUser = async (req, resp) => {
-  const { email, password } = req.body;
-  console.log("Email: ", email);
-  console.log("password", password);
+import jwt from "jsonwebtoken";
 
-  //check the email and password
-  if (!email || !password) {
-    return resp.status(403).json({
-      message: "Invalid Credentials !!",
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    console.log("Email:", email);
+    console.log("Password:", password);
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(403).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Password match:", isMatch);
+
+    if (!isMatch) {
+      return res.status(403).json({ message: "Invalid email or password" });
+    }
+
+    // ✅ Generate token
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET || "secretkey",
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
     });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Server error" });
   }
-
-  ///user fetch jiski emailhai:
-
-  const user = await User.findOne({ email });
-  if (!user) {
-    return resp.status(403).json({
-      message: "Invalid Username or Password !",
-    });
-  }
-
-  // match the passwords
-  const match = await bcrypt.compare(password, user.password);
-console.log("match", match);
-  if (!match) {
-    return resp.status(403).json({
-      message: "Invalid Username or Password !!",
-    });
-  }
-
-  // token____
-
-  //we have to create token
-  const accessToken = createToken(user);
-  resp.json({
-    accessToken,
-    user,
-  });
 };
