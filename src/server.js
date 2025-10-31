@@ -18,11 +18,17 @@ dotenv.config();
 connectDb();
 
 const app = express();
-
 app.use(
   cors({
-     origin: ["https://6904fd0507e92031e5c49d7d--sweet-duckanoo-b3b3dc.netlify.app"],
+    origin: [
+      "https://6904fd0507e92031e5c49d7d--sweet-duckanoo-b3b3dc.netlify.app",
+      "https://sweet-duckanoo-b3b3dc.netlify.app", // Netlify's production URL (auto-redirect fix)
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
+
+
 );
 
 app.use(express.json());
