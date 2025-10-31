@@ -21,7 +21,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend port
+    origin: "https://budgetbuddy96.netlify.app/", // frontend port
   })
 );
 
