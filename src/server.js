@@ -57,6 +57,8 @@ app.get("/", (req, resp) => {
   resp.json({ message: "Welcome to expense backend." });
 });
 
-app.listen(8081, () => {
-  console.log("✅ Server started on http://localhost:8081");
+const PORT = process.env.PORT || 8081;
+app.listen(PORT, () => {
+  console.log(`✅ Server started on port ${PORT}`);
 });
+
