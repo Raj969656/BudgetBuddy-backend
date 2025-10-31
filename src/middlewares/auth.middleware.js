@@ -6,23 +6,18 @@ export const authMiddleware = (req, res, next) => {
 
   if (!authorization) {
     return res.status(403).json({
-      message: "no access token found!!",
+      message: "no acccess token found!!",
     });
   }
 
   try {
-    // ✅ Strip "Bearer " if present
-    const token = authorization.startsWith("Bearer ")
-      ? authorization.split(" ")[1]
-      : authorization;
-
-    const payload = jsonwebtoken.verify(token, ACCESS_SECRET);
-    req.userId = payload.sub;
+    const payload = jsonwebtoken.verify(authorization, ACCESS_SECRET);
+    req.userId = payload.sub || payload.id; // ✅ handle both key names
     next();
-  } catch (e) {
+  } catch (error) {
     return res.status(403).json({
-      message: "invalid or expired token",
-      error: e.message,
+      message: "Invalid or expired token",
+      error: error.message,
     });
   }
 };
