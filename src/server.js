@@ -17,9 +17,9 @@ connectDb();
 const app = express();
 
 app.use(
-  origin: [
-      "https://mr-budgetbuddy.netlify.app",
-      "http://localhost:5173"
+ origin: [
+      "https://sweet-duckanoo-b3b3dc.netlify.app",
+      "https://6905094c0ef96a618725ca1e--sweet-duckanoo-b3b3dc.netlify.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
