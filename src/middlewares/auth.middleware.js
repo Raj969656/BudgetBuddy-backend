@@ -1,23 +1,28 @@
-import jwt from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
 import { ACCESS_SECRET } from "../utils/constants.js";
 
-export const authMiddleware = (req, res, next) => {
+export const authMiddleware = (req, resp, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization) {
-    return res.status(403).json({
-      message: "no access token found!!",
+  if (!authorization || !authorization.startsWith("Bearer ")) {
+    return resp.status(403).json({
+      message: "No access token found or invalid format!",
     });
   }
 
+  const token = authorization.split(" ")[1];
+
   try {
-    const payload = jwt.verify(authorization, ACCESS_SECRET);
-    req.userId = payload.id || payload.sub;
+    const payload = jsonwebtoken.verify(token, ACCESS_SECRET);
+
+    console.log("✅ Verified userId:", payload.sub || payload.id);
+    req.userId = payload.sub || payload.id;
+
     next();
-  } catch (err) {
-    return res.status(403).json({
-      message: "Invalid or expired token",
-      error: err.message,
+  } catch (e) {
+    console.error("❌ Token verification failed:", e.message);
+    resp.status(403).json({
+      message: "Invalid or expired token!",
     });
   }
 };
