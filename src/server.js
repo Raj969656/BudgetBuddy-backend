@@ -17,7 +17,8 @@ connectDb();
 const app = express();
 
 app.use(
- origin: [
+  cors({
+    origin: [
       "https://sweet-duckanoo-b3b3dc.netlify.app",
       "https://6905094c0ef96a618725ca1e--sweet-duckanoo-b3b3dc.netlify.app",
     ],
@@ -26,6 +27,7 @@ app.use(
     credentials: true,
   })
 );
+
 
 app.use(express.json());
 
