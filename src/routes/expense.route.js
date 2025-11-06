@@ -10,15 +10,17 @@ import {
 
 const expenseRouter = Router();
 
-//get single expense
 // get all expenses
-expenseRouter.get("/expenses", getExpenses);
-//search
-expenseRouter.get("/expenses/search", searchByTitle);
-expenseRouter.get("/expenses/:expenseId", getExpense);
-// create expese
-expenseRouter.post("/expenses", createExpense);
-expenseRouter.delete("/expenses/:expenseId", deleteExpense); // updating expense
-expenseRouter.put("/expenses/:expId", updateExpense);
+expenseRouter.get("/", getExpenses);
+// search expenses
+expenseRouter.get("/search", searchByTitle);
+// get single expense
+expenseRouter.get("/:expenseId", getExpense);
+// create expense
+expenseRouter.post("/", createExpense);
+// delete expense
+expenseRouter.delete("/:expenseId", deleteExpense);
+// update expense
+expenseRouter.put("/:expId", updateExpense);
 
 export default expenseRouter;
