@@ -15,31 +15,26 @@ dotenv.config();
 connectDb();
 
 const app = express();
-
 app.use(
   cors({
-    origin: [
-      "https://budgetbuddy96.netlify.app/"
-      
-    ],
+    origin: "https://budgetbuddy96.netlify.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
 app.options("*", cors());
 
 app.use(express.json());
 
-// ✅ Auth routes (unprotected)
-// ✅ Auth routes (unprotected)
+// ✅ Public routes
 app.use("/api/auth", authRouter);
 app.use("/api/ai", aiRouter);
 
-// ✅ Protected routes (only for these)
+// ✅ Protected routes
 app.use("/api/expenses", authMiddleware, expenseRouter);
 app.use("/api/users", authMiddleware, userRouter);
-
 
 // ✅ Error handlers
 app.use(notFount);
